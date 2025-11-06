@@ -1,0 +1,5 @@
+{
+  "name": "Assistente Audio WhatsApp",
+  "description": "Carica un file audio .opus di WhatsApp per trascriverne il contenuto e generare risposte intelligenti con l'IA.",
+  "requestFramePermissions": []
+}
