@@ -43,18 +43,18 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
     >
       <label
         htmlFor="dropzone-file"
-        className={`flex flex-col items-center justify-center w-full h-56 sm:h-64 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-300 ${
-          isDragging ? 'border-indigo-500 bg-gray-700' : 'border-gray-600 bg-gray-800 hover:bg-gray-700/50'
+        className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-xl cursor-pointer transition-colors duration-300 ${
+          isDragging ? 'border-amber-500 bg-stone-800' : 'border-stone-700 bg-stone-900/50 hover:bg-stone-800 hover:border-stone-600'
         }`}
       >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-2">
-          <UploadIcon className={`w-8 h-8 sm:w-10 sm:h-10 mb-4 transition-transform duration-300 ${isDragging ? 'scale-110' : ''}`} />
-          <p className="mb-2 text-xs sm:text-sm text-gray-400">
-            <span className="font-semibold text-indigo-400">Trascina e rilascia</span> o clicca per caricare
+        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+          <UploadIcon className={`w-12 h-12 mb-4 transition-transform duration-300 ${isDragging ? 'scale-110 text-amber-500' : 'text-stone-500'}`} />
+          <p className="mb-2 text-sm text-stone-400">
+            <span className="font-bold text-amber-500 hover:underline">Clicca per caricare</span> o trascina il file qui
           </p>
-          <p className="text-[11px] sm:text-xs text-gray-500">File audio supportati: .opus, .ogg</p>
+          <p className="text-xs text-stone-600">Supporta: .opus, .ogg, .mp3, .wav, .m4a</p>
         </div>
-        <input id="dropzone-file" type="file" className="hidden" accept=".opus,.ogg" onChange={handleChange} />
+        <input id="dropzone-file" type="file" className="hidden" accept=".opus,.ogg,.mp3,.wav,.m4a,audio/mp4,audio/x-m4a" onChange={handleChange} />
       </label>
     </div>
   );

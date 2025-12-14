@@ -1,15 +1,35 @@
-
 <!DOCTYPE html>
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Assistente Audio WhatsApp</title>
+    <title>Assistente Audio AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+        /* Stili per il placeholder del contentEditable */
+        .rich-text-area[contenteditable=true]:empty:before {
+            content: attr(data-placeholder);
+            pointer-events: none;
+            color: #a8a29e; /* stone-400 */
+            display: block; /* necessario per Firefox */
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #1c1917; 
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #44403c; 
+          border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #57534e; 
         }
     </style>
   <script type="importmap">
@@ -23,7 +43,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-900 text-gray-100">
+  <body class="bg-stone-950 text-stone-100">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
