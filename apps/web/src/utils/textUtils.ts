@@ -1,4 +1,8 @@
 /**
+ * Web-specific text utilities using DOM APIs
+ */
+
+/**
  * Converts simple markdown (bold, italic) to HTML.
  * @param text The text with markdown.
  * @returns An HTML string.
@@ -26,7 +30,7 @@ export function markdownToHtml(text: string): string {
 }
 
 /**
- * Strips all HTML tags from a string.
+ * Strips all HTML tags from a string using DOMParser.
  * @param html The HTML string.
  * @returns The plain text string.
  */
