@@ -33,22 +33,32 @@ This document summarizes the GitHub Actions workflows that have been implemented
   - Automatic: When a tag starting with `v` is pushed (e.g., `v1.0.0`)
   - Manual: Via GitHub Actions UI "Run workflow" button
 - **Actions**:
-  1. **Build Job**:
+  1. **Web Build Job**:
      - Checks out code
      - Sets up Node.js 20
      - Installs dependencies
      - Builds web application
      - Creates ZIP archive of the built files
      - Uploads as artifact
-  2. **Release Job**:
-     - Downloads the build artifact
+  2. **Android Build Job**:
+     - Checks out code
+     - Sets up Node.js 20 and Expo
+     - Installs dependencies
+     - Builds Android APK using EAS Build (cloud)
+     - Waits for build completion
+     - Downloads and uploads APK as artifact
+  3. **Release Job**:
+     - Downloads both build artifacts
      - Determines version number (from tag or manual input)
      - Creates GitHub release with:
        - Version number
        - Release notes (features, installation instructions)
        - Downloadable `whatsapp-audio-web.zip`
+       - Downloadable `whatsapp-audio.apk`
+- **Requirements**:
+  - `EXPO_TOKEN` secret must be configured for Android builds
 - **Security**: 
-  - Build job uses minimal permissions (`contents: read`)
+  - Build jobs use minimal permissions (`contents: read`)
   - Release job uses specific permissions (`contents: write`)
   - Uses action-gh-release@v2 (latest version)
 
@@ -93,8 +103,19 @@ Each release will include:
   - Extract and serve with any static web server
   - Contains all built assets and HTML
   - Optimized and minified for production
+- **whatsapp-audio.apk**: Android application ready to install
+  - Built with EAS Build for Android devices
+  - Install directly on Android phones/tablets
+  - Requires "Install from Unknown Sources" permission
 
 ## 🚀 How to Create Your First Release
+
+### Prerequisites
+
+Before creating a release, ensure you have configured the `EXPO_TOKEN` secret:
+1. Create an Expo account at https://expo.dev
+2. Generate an access token from your account settings
+3. Add it to GitHub repository secrets as `EXPO_TOKEN`
 
 ### Method 1: Using Git Tags (Recommended)
 
@@ -108,9 +129,10 @@ git push origin v1.0.0
 
 The workflow will automatically:
 1. Build the web application
-2. Create a GitHub release
-3. Upload the ZIP artifact
-4. Add release notes
+2. Build the Android APK
+3. Create a GitHub release
+4. Upload both artifacts (ZIP and APK)
+5. Add release notes with installation instructions
 
 ### Method 2: Manual Workflow Dispatch
 

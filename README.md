@@ -19,6 +19,12 @@ Don't want to build from source? Download the latest pre-built release from the 
    ```
 4. Configure your Gemini API key in the app
 
+### Android Application
+1. Download `whatsapp-audio.apk` from the latest release
+2. Enable "Install from Unknown Sources" in your Android settings
+3. Install the APK file
+4. Enter your Gemini API key in the app settings
+
 Get your API key from: https://aistudio.google.com/apikey
 
 ## 🏗️ Architecture

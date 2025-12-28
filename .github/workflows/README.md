@@ -22,15 +22,21 @@ This directory contains GitHub Actions workflows for automated building and rele
 1. **Automatic:** When you push a Git tag starting with `v` (e.g., `v1.0.0`)
 2. **Manual:** Using GitHub's "Run workflow" button in the Actions tab
 
-**Purpose:** Creates a GitHub release with downloadable web application build.
+**Purpose:** Creates a GitHub release with downloadable web application and Android APK builds.
 
 **Actions:**
 - Builds the web application
-- Creates a ZIP archive of the build
+- Builds the Android APK using EAS Build
+- Creates ZIP archive of the web build
 - Creates a GitHub release with:
   - Release notes
   - Downloadable web application ZIP
+  - Downloadable Android APK
   - Installation instructions
+
+**Requirements:**
+- `EXPO_TOKEN` secret must be configured in repository settings for Android builds
+- Get your token from https://expo.dev after creating an account
 
 ## How to Create a Release
 
@@ -60,6 +66,7 @@ The workflow will create a release with the specified version number.
 Each release includes:
 
 - `whatsapp-audio-web.zip` - Web application build ready to deploy
+- `whatsapp-audio.apk` - Android APK ready to install on devices
 
 ### Using the Web Application
 
@@ -82,23 +89,45 @@ php -S localhost:8000
 
 Then open your browser to `http://localhost:8000` (or the appropriate port).
 
-## Mobile Application
+### Using the Android APK
 
-For building Android APK, use EAS Build locally:
+After downloading the Android APK:
 
-```bash
-cd apps/mobile
-eas build --platform android --profile preview
-```
+1. **Enable Installation from Unknown Sources**:
+   - Go to Settings > Security
+   - Enable "Install unknown apps" or "Unknown sources"
+   - Allow installation from your browser or file manager
 
-Or use cloud build:
+2. **Install the APK**:
+   - Open the downloaded `whatsapp-audio.apk` file
+   - Follow the installation prompts
+   - Grant necessary permissions when requested
 
-```bash
-cd apps/mobile
-eas build --platform android --profile preview --non-interactive
-```
+3. **Configure API Key**:
+   - Launch the app
+   - Enter your Gemini API key in the app settings
+   - Get your key from: https://aistudio.google.com/apikey
 
-Note: Mobile builds are not included in GitHub Actions as they require EAS token and signing configuration.
+## Setup Requirements
+
+### For Repository Maintainers
+
+To enable Android APK builds in the release workflow, you must configure the `EXPO_TOKEN` secret:
+
+1. Create an Expo account at https://expo.dev (free)
+2. Generate an access token:
+   - Go to https://expo.dev/accounts/[username]/settings/access-tokens
+   - Click "Create Token"
+   - Give it a descriptive name (e.g., "GitHub Actions")
+   - Copy the token
+3. Add the token to GitHub repository secrets:
+   - Go to repository Settings > Secrets and variables > Actions
+   - Click "New repository secret"
+   - Name: `EXPO_TOKEN`
+   - Value: Paste your Expo token
+   - Click "Add secret"
+
+Without this token, the Android build will fail but the web build will still succeed.
 
 ## Environment Variables
 

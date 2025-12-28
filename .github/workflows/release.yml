@@ -46,9 +46,114 @@ jobs:
           path: whatsapp-audio-web.zip
           retention-days: 1
 
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Android APK
+        id: build
+        run: |
+          cd apps/mobile
+          # Start the build and capture the output
+          eas build --platform android --profile preview --non-interactive --no-wait --json > build-output.json
+          
+          # Extract build ID from the output
+          BUILD_ID=$(jq -r '.id' build-output.json)
+          
+          if [ -z "$BUILD_ID" ] || [ "$BUILD_ID" = "null" ]; then
+            echo "Failed to get build ID from EAS"
+            cat build-output.json
+            exit 1
+          fi
+          
+          echo "Build ID: $BUILD_ID"
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Wait for build and download APK
+        run: |
+          BUILD_ID="${{ steps.build.outputs.build_id }}"
+          BUILD_TIMEOUT_SECONDS=1800
+          CHECK_INTERVAL_SECONDS=30
+          
+          echo "Waiting for build $BUILD_ID to complete..."
+          
+          cd apps/mobile
+          ELAPSED=0
+          while [ $ELAPSED -lt $BUILD_TIMEOUT_SECONDS ]; do
+            STATUS=$(eas build:view $BUILD_ID --json --non-interactive | jq -r '.status')
+            echo "Build status: $STATUS (${ELAPSED}s elapsed)"
+            
+            if [ "$STATUS" = "FINISHED" ]; then
+              echo "Build completed successfully"
+              break
+            elif [ "$STATUS" = "ERRORED" ] || [ "$STATUS" = "CANCELED" ]; then
+              echo "Build failed with status: $STATUS"
+              eas build:view $BUILD_ID --non-interactive
+              exit 1
+            fi
+            
+            sleep $CHECK_INTERVAL_SECONDS
+            ELAPSED=$((ELAPSED + CHECK_INTERVAL_SECONDS))
+          done
+          
+          if [ $ELAPSED -ge $BUILD_TIMEOUT_SECONDS ]; then
+            echo "Build timed out after ${BUILD_TIMEOUT_SECONDS} seconds"
+            exit 1
+          fi
+          
+          # Download the APK
+          echo "Downloading APK..."
+          APK_URL=$(eas build:view $BUILD_ID --json --non-interactive | jq -r '.artifacts.buildUrl')
+          
+          if [ -z "$APK_URL" ] || [ "$APK_URL" = "null" ]; then
+            echo "Failed to get APK download URL"
+            exit 1
+          fi
+          
+          curl -L -o ${{ github.workspace }}/whatsapp-audio.apk "$APK_URL"
+          
+          if [ ! -f "${{ github.workspace }}/whatsapp-audio.apk" ]; then
+            echo "Failed to download APK"
+            exit 1
+          fi
+          
+          echo "APK downloaded successfully"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: whatsapp-audio.apk
+          retention-days: 1
+
   create-release:
     name: Create GitHub Release
-    needs: [build-web]
+    needs: [build-web, build-android]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -60,6 +165,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-build
+
+      - name: Download Android artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-build
 
       - name: Determine version
         id: version
@@ -83,6 +193,7 @@ jobs:
             ### 📦 Downloads
 
             - **Web Application**: Download `whatsapp-audio-web.zip`, extract it, and serve with any static web server
+            - **Android APK**: Download `whatsapp-audio.apk` and install on your Android device
 
             ### 🚀 Features
 
@@ -100,20 +211,20 @@ jobs:
             npx serve .
             ```
 
+            **Android:**
+            1. Enable "Install from Unknown Sources" in your device settings
+            2. Download `whatsapp-audio.apk`
+            3. Open the APK file and follow installation prompts
+
             ### ⚙️ Configuration
 
             You'll need a Gemini API key from: https://aistudio.google.com/apikey
 
-            ### 📱 Mobile App
-
-            For Android APK builds, use EAS Build:
-            ```bash
-            cd apps/mobile
-            eas build --platform android --profile preview
-            ```
+            **For Android**: Enter your API key when prompted in the app settings.
           draft: false
           prerelease: false
           files: |
             whatsapp-audio-web.zip
+            whatsapp-audio.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
