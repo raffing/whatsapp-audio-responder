@@ -1,7 +1,25 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { AppState, ReplyTone, ReplyLength, VoiceGender, SpeechSpeed, BackgroundSound, backgroundSoundUrls, AudioType, MeetingRecap } from './types';
-import { transcribeAudio, generateWhatsAppFollowUp, generateReply, generateSpeech, generateSummary, generateKeyPoints, generateMeetingRecap, generateCleanTranscript } from './services/geminiService';
-import { decode, decodeAudioData } from './utils/audioUtils';
+import { 
+  AppState, 
+  ReplyTone, 
+  ReplyLength, 
+  VoiceGender, 
+  SpeechSpeed, 
+  BackgroundSound, 
+  backgroundSoundUrls, 
+  AudioType, 
+  MeetingRecap,
+  transcribeAudio,
+  generateWhatsAppFollowUp,
+  generateReply,
+  generateSpeech,
+  generateSummary,
+  generateKeyPoints,
+  generateMeetingRecap,
+  generateCleanTranscript,
+  decode
+} from '@whatsapp-audio/core';
+import { decodeAudioData } from './utils/audioUtils';
 import { markdownToHtml, stripHtml, plainTextToHtml } from './utils/textUtils';
 import FileUpload from './components/FileUpload';
 import TranscriptionView from './components/TranscriptionView';
@@ -48,6 +66,8 @@ const App: React.FC = () => {
         stopAllAudio();
         audioContextRef.current?.close().catch(console.error);
     };
+  // stopAllAudio is stable and doesn't need to be in dependencies
+  // This effect should only run once on mount and cleanup on unmount
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

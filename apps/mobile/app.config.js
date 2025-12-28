@@ -1,0 +1,37 @@
+export default {
+  expo: {
+    name: 'WhatsApp Audio Responder',
+    slug: 'whatsapp-audio-responder',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'light',
+    newArchEnabled: true,
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#ffffff',
+    },
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: 'com.whatsappaudio.responder',
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#ffffff',
+      },
+      package: 'com.whatsappaudio.responder',
+      permissions: ['android.permission.RECORD_AUDIO', 'android.permission.READ_EXTERNAL_STORAGE'],
+      edgeToEdgeEnabled: true,
+      predictiveBackGestureEnabled: false,
+    },
+    plugins: [['expo-document-picker']],
+    extra: {
+      geminiApiKey: process.env.GEMINI_API_KEY,
+      eas: {
+        projectId: '3ea2f8a1-c351-4728-9758-3295e736442b',
+      },
+    },
+  },
+};
