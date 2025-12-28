@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build-web:
+    name: Build Web Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build:web
+
+      - name: Create web archive
+        run: |
+          cd apps/web/dist
+          zip -r ../../../whatsapp-audio-web.zip .
+          cd ../../..
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: whatsapp-audio-web.zip
+          retention-days: 1
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-web]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ## WhatsApp Audio Responder v${{ steps.version.outputs.version }}
+            
+            ### 📦 Downloads
+            
+            - **Web Application**: Download `whatsapp-audio-web.zip`, extract it, and serve with any static web server
+            
+            ### 🚀 Features
+            
+            - Audio file transcription using Google Gemini AI
+            - Multiple audio type support (WhatsApp, Personal Notes, Call Recordings, Meetings)
+            - AI-powered reply generation
+            - Text-to-speech with voice customization
+            - Summary and key points extraction
+            
+            ### 📱 Installation
+            
+            **Web App:**
+            ```bash
+            unzip whatsapp-audio-web.zip
+            npx serve .
+            ```
+            
+            ### ⚙️ Configuration
+            
+            You'll need a Gemini API key from: https://aistudio.google.com/apikey
+            
+            ### 📱 Mobile App
+            
+            For Android APK builds, use EAS Build:
+            ```bash
+            cd apps/mobile
+            eas build --platform android --profile preview
+            ```
+          draft: false
+          prerelease: false
+          files: |
+            whatsapp-audio-web.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
