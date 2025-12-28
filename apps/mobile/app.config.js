@@ -30,7 +30,7 @@ export default {
     extra: {
       geminiApiKey: process.env.GEMINI_API_KEY,
       eas: {
-        projectId: 'whatsapp-audio-responder',
+        projectId: 'd24a592c-9693-47fa-8846-4b183a79fc3b',
       },
     },
   },
