@@ -77,33 +77,33 @@ jobs:
           name: Release ${{ steps.version.outputs.version }}
           body: |
             ## WhatsApp Audio Responder v${{ steps.version.outputs.version }}
-            
+
             ### 📦 Downloads
-            
+
             - **Web Application**: Download `whatsapp-audio-web.zip`, extract it, and serve with any static web server
-            
+
             ### 🚀 Features
-            
+
             - Audio file transcription using Google Gemini AI
             - Multiple audio type support (WhatsApp, Personal Notes, Call Recordings, Meetings)
             - AI-powered reply generation
             - Text-to-speech with voice customization
             - Summary and key points extraction
-            
+
             ### 📱 Installation
-            
+
             **Web App:**
             ```bash
             unzip whatsapp-audio-web.zip
             npx serve .
             ```
-            
+
             ### ⚙️ Configuration
-            
+
             You'll need a Gemini API key from: https://aistudio.google.com/apikey
-            
+
             ### 📱 Mobile App
-            
+
             For Android APK builds, use EAS Build:
             ```bash
             cd apps/mobile
