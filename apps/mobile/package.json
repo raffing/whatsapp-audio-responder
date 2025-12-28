@@ -1,0 +1,25 @@
+{
+  "name": "@whatsapp-audio/mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "build:android": "eas build --platform android --local"
+  },
+  "dependencies": {
+    "@whatsapp-audio/core": "*",
+    "expo": "~54.0.30",
+    "expo-constants": "~17.0.4",
+    "expo-document-picker": "~13.0.2",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.0",
+    "typescript": "~5.8.2"
+  },
+  "private": true
+}
