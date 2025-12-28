@@ -6,6 +6,21 @@
 
 TypeScript monorepo for transcribing and analyzing audio messages using Google Gemini AI. Includes both web and mobile applications sharing the same business logic.
 
+## 📥 Download Pre-built Releases
+
+Don't want to build from source? Download the latest pre-built release from the [Releases page](https://github.com/raffing/whatsapp-audio-responder/releases).
+
+### Web Application
+1. Download `whatsapp-audio-web.zip` from the latest release
+2. Extract the archive
+3. Serve with any static web server:
+   ```bash
+   npx serve .
+   ```
+4. Configure your Gemini API key in the app
+
+Get your API key from: https://aistudio.google.com/apikey
+
 ## 🏗️ Architecture
 
 This project is structured as a monorepo with the following packages:
@@ -240,11 +255,44 @@ Both apps require a `GEMINI_API_KEY`:
 
 1. Add comprehensive test suite (Jest, React Testing Library)
 2. Implement full feature parity in mobile app
-3. Add CI/CD pipelines
-4. Implement secure API key storage for mobile (Expo SecureStore)
-5. Add error boundaries and better error handling
-6. Implement offline support and caching
-7. Add internationalization (i18n)
+3. Implement secure API key storage for mobile (Expo SecureStore)
+4. Add error boundaries and better error handling
+5. Implement offline support and caching
+6. Add internationalization (i18n)
+
+## 🚀 CI/CD & Releases
+
+This project uses GitHub Actions for continuous integration and automated releases.
+
+### Continuous Integration
+
+Every push or pull request to `main` or `develop` branches automatically:
+- Builds the web application
+- Validates code can be built successfully
+- Stores build artifacts for review
+
+### Creating Releases
+
+**Automated Release (Recommended):**
+```bash
+# Create and push a version tag
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This automatically triggers a workflow that:
+1. Builds the web application
+2. Creates a ZIP archive
+3. Creates a GitHub release with downloadable artifacts
+
+**Manual Release:**
+1. Go to the repository's Actions tab
+2. Select the "Release" workflow
+3. Click "Run workflow"
+4. Enter the version number
+5. The release will be created automatically
+
+See [`.github/workflows/README.md`](.github/workflows/README.md) for more details.
 
 ## 🤝 Contributing
 
