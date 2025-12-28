@@ -18,22 +18,6 @@ export function escapeHtml(text: string): string {
 }
 
 /**
- * Strips HTML tags from a string using regex (platform-agnostic).
- * @param html The HTML string.
- * @returns The plain text string.
- */
-export function stripHtmlTags(html: string): string {
-    if (!html) return '';
-    // Replace <br> and <p> tags with newlines for better text structure
-    const withNewlines = html
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<p>/gi, '');
-    // Remove all other HTML tags
-    return withNewlines.replace(/<[^>]*>/g, '');
-}
-
-/**
  * Converts markdown-style formatting to plain text (removes formatting).
  * @param text The text with markdown.
  * @returns Plain text without markdown syntax.
