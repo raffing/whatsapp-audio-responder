@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Spinner from './Spinner';
 import { RefreshIcon, StartOverIcon, FileAudioIcon, MicrophoneIcon, PlayIcon, QuestionMarkCircleIcon, DownloadIcon, NoteIcon, PhoneIcon, MeetingIcon } from './icons';
-import { ReplyTone, ReplyLength, VoiceGender, SpeechSpeed, BackgroundSound, AudioType, MeetingRecap } from '../types';
+import { ReplyTone, ReplyLength, VoiceGender, SpeechSpeed, BackgroundSound, AudioType, MeetingRecap } from '@whatsapp-audio/core';
 import RichTextArea from './RichTextArea';
 import { downloadText, stripHtml } from '../utils/textUtils';
 

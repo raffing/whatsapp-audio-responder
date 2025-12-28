@@ -1,13 +1,29 @@
 import { GoogleGenAI, Modality, Type } from "@google/genai";
-import { ReplyTone, ReplyLength, VoiceGender, AudioType, MeetingRecap } from "../types";
+import { ReplyTone, ReplyLength, VoiceGender, AudioType, MeetingRecap } from "../types/index";
 
-const API_KEY = process.env.API_KEY;
+// Allow API key to be set at runtime or from environment
+let apiKeyOverride: string | null = null;
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+/**
+ * Set the API key at runtime. This is useful for mobile apps where environment
+ * variables may not be available at build time.
+ * @param apiKey The Gemini API key
+ */
+export function setApiKey(apiKey: string) {
+  apiKeyOverride = apiKey;
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+function getApiKey(): string {
+  const key = apiKeyOverride || process.env.API_KEY;
+  if (!key) {
+    throw new Error("API key not set. Please set GEMINI_API_KEY environment variable or call setApiKey().");
+  }
+  return key;
+}
+
+function getAI(): GoogleGenAI {
+  return new GoogleGenAI({ apiKey: getApiKey() });
+}
 
 const getTranscriptionPrompt = (audioType: AudioType | null): string => {
     switch (audioType) {
@@ -51,7 +67,7 @@ export const transcribeAudio = async (base64Audio: string, mimeType: string, aud
       text: getTranscriptionPrompt(audioType),
     };
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
         model: 'gemini-2.5-pro',
         contents: { parts: [audioPart, textPart] },
     });
@@ -74,7 +90,7 @@ export const generateWhatsAppFollowUp = async (transcription: string): Promise<s
 
 Trascrizione: "${transcription}"`;
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
@@ -141,7 +157,7 @@ La risposta deve seguire queste direttive:
 - Tono: ${toneInstruction}
 - Lunghezza: ${lengthInstruction}`;
     
-    const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+    const response = await getAI().models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
     return response.text;
   } catch (error) {
     console.error("Error generating reply:", error);
@@ -158,7 +174,7 @@ La risposta deve seguire queste direttive:
 export const generateSpeech = async (text: string, voice: VoiceGender): Promise<string> => {
     try {
         const voiceName = voice === VoiceGender.Male ? 'Puck' : 'Kore';
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: "gemini-2.5-flash-preview-tts",
             contents: [{ parts: [{ text: text }] }],
             config: {
@@ -185,7 +201,7 @@ export const generateSummary = async (transcription: string): Promise<string> =>
         const prompt = `Riassumi la seguente nota personale in 2-3 frasi chiave. Cattura l'essenza del messaggio in modo chiaro e conciso.
 
 Trascrizione: "${transcription}"`;
-        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+        const response = await getAI().models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
         return response.text;
     } catch (error) {
         console.error("Error generating summary:", error);
@@ -203,7 +219,7 @@ export const generateKeyPoints = async (transcription: string): Promise<string[]
         const prompt = `Analizza la trascrizione di questa telefonata. Estrai i 3-5 punti salienti più importanti discussi. Elencali in modo chiaro e sintetico. Formatta l'output come un oggetto JSON con una chiave 'keyPoints' che contiene un array di stringhe.
 
 Trascrizione: "${transcription}"`;
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
@@ -247,7 +263,7 @@ Istruzioni:
 
 Trascrizione grezza: "${transcription}"`;
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
         });
@@ -269,7 +285,7 @@ export const generateMeetingRecap = async (transcription: string): Promise<Meeti
 
 Trascrizione: "${transcription}"`;
 
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {

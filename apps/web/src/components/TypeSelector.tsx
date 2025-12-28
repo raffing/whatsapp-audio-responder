@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioType } from '../types';
+import { AudioType } from '@whatsapp-audio/core';
 import { WhatsAppIcon, NoteIcon, PhoneIcon, MeetingIcon } from './icons';
 
 interface TypeSelectorProps {

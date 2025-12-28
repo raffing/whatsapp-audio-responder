@@ -1,7 +1,0 @@
-{
-  "name": "Assistente Audio AI",
-  "description": "Carica qualsiasi file audio (note, riunioni, chiamate) per trascriverlo, riassumerlo e generare contenuti intelligenti con l'IA.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}

@@ -1,17 +1,6 @@
 /**
- * Decodes a base64 string into a Uint8Array.
- * @param base64 The base64 encoded string.
- * @returns The decoded byte array.
+ * Web-specific audio utilities using Web Audio API
  */
-export function decode(base64: string): Uint8Array {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-}
 
 /**
  * Decodes raw PCM audio data into an AudioBuffer for playback with the Web Audio API.

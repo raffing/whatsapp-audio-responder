@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "WhatsApp Audio Responder",
+    "slug": "whatsapp-audio-responder",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.whatsappaudio.responder"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.whatsappaudio.responder",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-document-picker"
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d24a592c-9693-47fa-8846-4b183a79fc3b"
+      }
+    }
+  }
+}

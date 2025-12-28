@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Expo
+apps/mobile/.expo/
+apps/mobile/.expo-shared/
+
+# Build outputs
+apps/web/dist/
+apps/mobile/android/
+apps/mobile/ios/
+packages/*/dist/
+
+# Release artifacts
+*.zip
+*.apk
+
+# Environment files (but keep example)
+.env.local
+.env*.local
+!.env.example
