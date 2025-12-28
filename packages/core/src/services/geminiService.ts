@@ -16,7 +16,7 @@ export function setApiKey(apiKey: string) {
 function getApiKey(): string {
   const key = apiKeyOverride || process.env.API_KEY;
   if (!key) {
-    throw new Error("API_KEY not set. Please set it using setApiKey() or environment variable.");
+    throw new Error("API key not set. Please set GEMINI_API_KEY environment variable or call setApiKey().");
   }
   return key;
 }

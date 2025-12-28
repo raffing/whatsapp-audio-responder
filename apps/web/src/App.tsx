@@ -66,6 +66,8 @@ const App: React.FC = () => {
         stopAllAudio();
         audioContextRef.current?.close().catch(console.error);
     };
+  // stopAllAudio is stable and doesn't need to be in dependencies
+  // This effect should only run once on mount and cleanup on unmount
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
