@@ -1,6 +1,8 @@
+
 export enum AppState {
   SELECTING_TYPE,
   IDLE,
+  PROCESSING_BATCH, // Nuovo stato per l'elaborazione di più file
   TRANSCRIBING,
   ANALYZING,
   ANALYSIS_COMPLETE,
@@ -13,6 +15,11 @@ export enum AudioType {
     PersonalNote,
     CallRecording,
     MeetingRecording,
+}
+
+export enum BatchMode {
+    Sequential = 'sequential', // Sessione unica
+    Independent = 'independent' // File separati
 }
 
 export enum ReplyTone {
@@ -54,4 +61,16 @@ export interface MeetingRecap {
     summary: string;
     decisions: string[];
     actionItems: string[];
+}
+
+export interface AudioResult {
+    id: string;
+    fileName: string;
+    transcription: string;
+    followUpQuestions: string[];
+    reply: string;
+    summary: string;
+    keyPoints: string[];
+    cleanTranscript: string;
+    meetingRecap: MeetingRecap | null;
 }
